@@ -1,0 +1,56 @@
+ 
+<html>
+
+<head></head>
+
+
+<body>
+<h1>S'identifier automatiquement à votre espace personnel pole emploi</h1>
+Pour cela deplacer dans votre barre de favoris le liens suivant :
+<a href="javascript:
+  (function() {
+    var script = document.createElement('script');
+    script.src = 'https://code.jquery.com/jquery-1.11.3.js';
+    script.onload = script.onreadystatechange = function(){
+      if(document.location.hostname != 'candidat.pole-emploi.fr') {
+        /* if not on poleemploi website, redirect into */
+	document.location = 'https://candidat.pole-emploi.fr/candidat/espacepersonnel/authentification/';
+      } else {
+        /* id page */
+        if( $('#champTexteIdentifiant').length ) {
+	  if( !localStorage['fv_id'] || $('.feedback-line').length ) {
+	    localStorage['fv_id'] = prompt('Quel est votre identifiant ? Il sera mémorisé');
+	  }
+	  $('#champTexteIdentifiant').val(localStorage['fv_id']);
+	  $('#boutonContinuer').click();
+        }
+        
+        /* password & cp page */
+        if( $('#champMotDePasse').length) {
+          if(!localStorage['fv_pswd'] || $('.feedback-line:contains(\'Mot de passe\')').length ) {
+	    localStorage['fv_pswd'] = prompt('Quel est votre mot de passe ? Il sera mémorisé');
+	  }
+	  if(!localStorage['fv_cp'] || $('.feedback-line:contains(\'code postal\')').length ) {
+	    localStorage['fv_cp'] = prompt('Quel est votre code postal ? Il sera mémorisé');
+	  }
+	  
+	  /* $('#champMotDePasse').val(xxx) doesnt work because the password is not clearly sent but a kind of mapping idTouchesCliques */
+	  var pswd = localStorage['fv_pswd'];
+	  for (var i = 0; i < pswd.length; i++) {
+	    var letter = String.fromCharCode(pswd.charCodeAt(i) + 17);
+	    $('button.touche'+letter).click();
+	  }
+
+	  $('#champTexteCodePostal').val(localStorage['fv_cp']);
+	  $('#boutonValider').click();
+        }
+      }
+    };
+    document.body.appendChild( script );
+})();
+" style="cursor:move">PoleEmploi</a>.<br/>
+Un permier click vous redirigement vers la page d'authentification pole-emploi. <br />
+Un deuxième vous demandera votre identifiant pour le mémoriser et renseigner le 1er formulaire.<br />
+Un troisième vous demandera votre mot de passe et code postal pour le mémoriser et renseigner le 2ième formulaire.<br />
+
+</body>
